@@ -1,0 +1,20 @@
+<script type="module">
+    import ReactDOM from "{{es_react_dom_path}}";
+    import React from "{{es_react_path}}";
+
+    {% for component in components %}
+        import {{ component.name }} from "{{ component.import_from }}";
+    {% endfor %}
+
+    {% for component in components %}
+        ReactDOM.{{ ssr_available|yesno:"hydrate,render" }}(
+            React.createElement({{ component.name }},
+                {% if component.json %}
+                    {{ component.json|safe }}
+                {% else %}
+                    null
+                {% endif %}),
+            document.getElementById('{{ component.identifier }}')
+        );
+    {% endfor %}
+</script>
